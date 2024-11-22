@@ -1,43 +1,38 @@
 #include <stdio.h>
 #include <limits.h>
 #include <stdbool.h>
-#define V 5 
-int minDistance(int dist[], bool sptSet[])
+#define V 5
+void dijkstra(int graph[V][V], int src) 
 {
-    int min = INT_MAX, min_index;
-    for (int v = 0; v < V; v++) {
-        if (sptSet[v] == false && dist[v] <= min) 
-        {
-            min = dist[v];
-            min_index = v;
-        }
-    }
-    return min_index;
-}
-void dijkstra(int graph[V][V], int src)
-{
-    int dist[V]; 
-    bool sptSet[V]; 
+    int dist[V], visited[V] = {0}; 
     for (int i = 0; i < V; i++) 
     {
         dist[i] = INT_MAX;
-        sptSet[i] = false;
     }
     dist[src] = 0;
-    for (int count = 0; count < V - 1; count++)
+    for (int i = 0; i < V - 1; i++) 
     {
-        int u = minDistance(dist, sptSet);
-        sptSet[u] = true;
-        for (int v = 0; v < V; v++)
+        int u = -1;
+        for (int v = 0; v < V; v++) 
         {
-            if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX && dist[u] + graph[u][v] < dist[v]) {
+            if (!visited[v] && (u == -1 || dist[v] < dist[u])) 
+            {
+                u = v;
+            }
+        }
+        visited[u] = 1; 
+        for (int v = 0; v < V; v++) 
+        {
+            if (graph[u][v] && !visited[v] && dist[u] + graph[u][v] < dist[v]) 
+            {
                 dist[v] = dist[u] + graph[u][v];
             }
         }
     }
-    printf("Vertex \t Distance from Source Vertex %d\n", src);
-    for (int i = 0; i < V; i++) {
-        printf("%d \t\t %d\n", i, dist[i]);
+    printf("Vertex\tDistance from Source %d\n", src);
+    for (int i = 0; i < V; i++) 
+    {
+        printf("%d\t\t%d\n", i, dist[i]);
     }
 }
 int main() 
